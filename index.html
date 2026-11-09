@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetAdmin OS — Enterprise Network Administrator Handbook & Interactive Lab</title>
+  <meta name="description" content="Comprehensive interactive study portal and reference manual for Network Administrators and Engineers. Covers OSI, TCP/IP, Subnetting, Switching, Routing, DNS, DHCP, Firewalls, Wireshark, Cloud Networking, and CLI diagnostics.">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: ['selector', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            noc: {
+              950: '#060913',
+              900: '#0b0f19',
+              850: '#111827',
+              800: '#1f2937',
+              700: '#374151',
+              cyan: '#06b6d4',
+              blue: '#3b82f6',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-noc-900 text-gray-100 font-sans antialiased tech-grid-bg">
+
+  <!-- ======================================================================
+       TOP NAVIGATION BAR
+       ====================================================================== -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-gray-800 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand & Status -->
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+          <i data-lucide="network" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-bold tracking-tight text-white font-mono text-base">NetAdmin<span class="text-cyan-400">.OS</span></span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 pulse-online"></span> ONLINE
+            </span>
+          </div>
+          <p class="text-[10px] text-gray-400 hidden sm:block">Network Engineering & Administration Knowledge Base</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Jump Links -->
+      <div class="hidden lg:flex items-center space-x-1 text-xs font-medium">
+        <a href="#mod-subnet" class="px-3 py-1.5 rounded-md hover:bg-gray-800 text-gray-300 hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="calculator" class="w-3.5 h-3.5 text-cyan-400"></i> Subnet Tool
+        </a>
+        <a href="#mod-simulator" class="px-3 py-1.5 rounded-md hover:bg-gray-800 text-gray-300 hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="play-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Packet Sim
+        </a>
+        <a href="#mod-terminal" class="px-3 py-1.5 rounded-md hover:bg-gray-800 text-gray-300 hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="terminal" class="w-3.5 h-3.5 text-amber-400"></i> CLI Lab
+        </a>
+        <a href="#mod-ports" class="px-3 py-1.5 rounded-md hover:bg-gray-800 text-gray-300 hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="list-filter" class="w-3.5 h-3.5 text-purple-400"></i> Port Matrix
+        </a>
+        <a href="#mod-quiz" class="px-3 py-1.5 rounded-md hover:bg-gray-800 text-gray-300 hover:text-cyan-400 transition flex items-center gap-1.5">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-rose-400"></i> Exam Quiz
+        </a>
+      </div>
+
+      <!-- Search, Progress & Controls -->
+      <div class="flex items-center space-x-3">
+        <!-- Quick Search Button -->
+        <button onclick="openSearchModal()" class="flex items-center space-x-2 px-3 py-1.5 text-xs text-gray-400 bg-gray-800/80 hover:bg-gray-800 border border-gray-700/80 rounded-lg transition shadow-sm">
+          <i data-lucide="search" class="w-3.5 h-3.5"></i>
+          <span class="hidden md:inline">Quick Search</span>
+          <kbd class="hidden md:inline font-mono text-[10px] bg-gray-900 px-1.5 py-0.5 rounded border border-gray-700 text-gray-400">Ctrl K</kbd>
+        </button>
+
+        <!-- Global Mastery Progress Pill -->
+        <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-gray-800/60 border border-gray-700 rounded-lg text-xs">
+          <div class="w-16 bg-gray-700 h-1.5 rounded-full overflow-hidden">
+            <div id="global-progress-bar" class="bg-cyan-400 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <span id="global-progress-text" class="font-mono text-cyan-400 font-bold">0%</span>
+        </div>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition" title="Toggle Theme">
+          <i id="theme-toggle-icon" data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       MAIN LAYOUT CONTAINER (SIDEBAR + CONTENT)
+       ====================================================================== -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-8">
+    
+    <!-- STICKY SIDEBAR NAVIGATION -->
+    <aside class="hidden xl:block w-72 flex-shrink-0">
+      <div class="sticky top-24 space-y-6">
+        
+        <!-- Progress Summary Widget -->
+        <div class="glass-panel p-4 rounded-xl border border-gray-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Study Progress</span>
+            <span id="global-progress-count" class="text-xs font-mono text-cyan-400">0 / 36 Topics</span>
+          </div>
+          <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+            <div id="sidebar-progress-bar" class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <p class="text-[11px] text-gray-400 mt-2">Check off topics as you study to track readiness.</p>
+        </div>
+
+        <!-- Sidebar Navigation Tree -->
+        <nav class="glass-panel p-3 rounded-xl border border-gray-800 space-y-1 text-xs max-h-[calc(100vh-280px)] overflow-y-auto">
+          <div class="px-2 py-1.5 font-bold text-gray-400 uppercase tracking-wider text-[10px]">Study Modules</div>
+          
+          <a href="#mod-hero" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-cyan-400"></i> NOC Overview
+          </a>
+          <a href="#mod-osi" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-pink-400"></i> 1. OSI & Network Topologies
+          </a>
+          <a href="#mod-subnet" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="binary" class="w-3.5 h-3.5 text-cyan-400"></i> 2. IPv4, IPv6 & Subnetting
+          </a>
+          <a href="#mod-switching" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="split" class="w-3.5 h-3.5 text-emerald-400"></i> 3. Switching & Layer 2
+          </a>
+          <a href="#mod-routing" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="git-branch" class="w-3.5 h-3.5 text-blue-400"></i> 4. Routing, OSPF & BGP
+          </a>
+          <a href="#mod-services" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="server" class="w-3.5 h-3.5 text-amber-400"></i> 5. DNS, DHCP, NAT & SNMP
+          </a>
+          <a href="#mod-security" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-rose-400"></i> 6. Security, ACLs & VPNs
+          </a>
+          <a href="#mod-troubleshooting" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="wrench" class="w-3.5 h-3.5 text-teal-400"></i> 7. Admin Troubleshooting Toolkit
+          </a>
+          <a href="#mod-datacenter" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-400"></i> 8. Spine-Leaf, VXLAN & Cloud
+          </a>
+          <a href="#mod-simulator" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i> 9. Interactive Packet Simulator
+          </a>
+          <a href="#mod-terminal" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="terminal" class="w-3.5 h-3.5 text-amber-400"></i> 10. CLI Diagnostic Simulator
+          </a>
+          <a href="#mod-ports" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="table" class="w-3.5 h-3.5 text-purple-400"></i> 11. Network Port Matrix
+          </a>
+          <a href="#mod-quiz" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-cyan-400 transition">
+            <i data-lucide="check-square" class="w-3.5 h-3.5 text-rose-400"></i> 12. Certification Practice Quiz
+          </a>
+        </nav>
+
+        <!-- Quick Study Tip Card -->
+        <div class="p-3 rounded-xl bg-cyan-950/30 border border-cyan-800/40 text-xs text-cyan-200">
+          <div class="font-bold flex items-center gap-1.5 mb-1 text-cyan-300">
+            <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i> Admin Tip
+          </div>
+          Always start troubleshooting at Layer 1 and Layer 2: "Is the interface up/up? Are frames dropping with CRC errors?"
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- MAIN EDITORIAL & INTERACTIVE CONTENT -->
+    <main class="flex-1 min-w-0 space-y-16">
+
+      <!-- ====================================================================
+           HERO & NOC OPERATIONS DASHBOARD
+           ==================================================================== -->
+      <section id="mod-hero" class="glass-panel p-6 sm:p-8 rounded-2xl border border-gray-800 relative overflow-hidden">
+        <div class="absolute -right-16 -top-16 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 text-xs font-mono text-cyan-400 uppercase tracking-widest mb-3">
+            <i data-lucide="cpu" class="w-4 h-4"></i> Network Administrator Operating Handbook
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+            Master Enterprise Networking from <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Packets to Cloud</span>
+          </h1>
+          <p class="text-gray-300 text-sm sm:text-base max-w-3xl leading-relaxed mb-6">
+            A self-contained, interactive engineering portal built for self-study and real-world network administration. Master the OSI stack, subnetting math, routing protocols (OSPF, BGP), switching (VLANs, STP), packet flow mechanics, firewalls, and command-line diagnostics with live interactive tools.
+          </p>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-gray-800/80">
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="text-2xl font-bold font-mono text-cyan-400">36+</div>
+              <div class="text-xs text-gray-400">Core Admin Topics</div>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="text-2xl font-bold font-mono text-emerald-400">3</div>
+              <div class="text-xs text-gray-400">Interactive Simulators</div>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="text-2xl font-bold font-mono text-amber-400">40+</div>
+              <div class="text-xs text-gray-400">Essential Port Specs</div>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="text-2xl font-bold font-mono text-purple-400">Zero</div>
+              <div class="text-xs text-gray-400">Dependencies / Offline Ready</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 1: FOUNDATIONS, OSI MODEL & TOPOLOGIES
+           ==================================================================== -->
+      <section id="mod-osi" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-pink-400 uppercase tracking-widest">Module 01</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="layers" class="w-6 h-6 text-pink-400"></i> OSI 7-Layer vs TCP/IP & Architecture
+            </h2>
+          </div>
+        </div>
+
+        <!-- Topic 1.1: OSI vs TCP/IP Breakdown -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-osi-model">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-pink-400"></span> The 7-Layer OSI Reference Model & PDU Encapsulation
+            </h3>
+            <button onclick="toggleTopicMastery('topic-osi-model')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+          
+          <p class="text-sm text-gray-300 leading-relaxed">
+            The Open Systems Interconnection (OSI) model standardizes network communication into 7 distinct abstraction layers. As data moves down the stack from sender to receiver, each layer prepends its own Protocol Data Unit (PDU) header (encapsulation). At the receiving end, each layer strips its corresponding header (de-encapsulation).
+          </p>
+
+          <!-- Interactive OSI Layer Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-gray-700 bg-gray-900/80 text-gray-400 uppercase font-mono">
+                  <th class="py-2.5 px-3">Layer</th>
+                  <th class="py-2.5 px-3">Name</th>
+                  <th class="py-2.5 px-3">PDU</th>
+                  <th class="py-2.5 px-3">Core Function & Addressing</th>
+                  <th class="py-2.5 px-3">Hardware / Protocols</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-pink-400">Layer 7</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Application</td>
+                  <td class="py-2.5 px-3 font-mono text-gray-300">Data</td>
+                  <td class="py-2.5 px-3 text-gray-300">Direct interface to user software; high-level APIs.</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">HTTP/S, DNS, DHCP, SSH, BGP, SNMP</td>
+                </tr>
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-pink-400">Layer 6</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Presentation</td>
+                  <td class="py-2.5 px-3 font-mono text-gray-300">Data</td>
+                  <td class="py-2.5 px-3 text-gray-300">Data formatting, serialization, encryption & compression.</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">TLS/SSL, ASCII, UTF-8, JSON, JPEG</td>
+                </tr>
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-pink-400">Layer 5</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Session</td>
+                  <td class="py-2.5 px-3 font-mono text-gray-300">Data</td>
+                  <td class="py-2.5 px-3 text-gray-300">Establishes, maintains, and synchronizes dialogues between apps.</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">NetBIOS, RPC, Sockets, PPTP</td>
+                </tr>
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-purple-400">Layer 4</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Transport</td>
+                  <td class="py-2.5 px-3 font-mono text-purple-300 font-bold">Segment / Datagram</td>
+                  <td class="py-2.5 px-3 text-gray-300">End-to-end reliability, flow control (sliding window), port addressing.</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">TCP, UDP, SCTP, QUIC (Ports 1-65535)</td>
+                </tr>
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-blue-400">Layer 3</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Network</td>
+                  <td class="py-2.5 px-3 font-mono text-blue-300 font-bold">Packet</td>
+                  <td class="py-2.5 px-3 text-gray-300">Logical addressing, path determination across subnets, fragmentation.</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">Routers, L3 Switches, IPv4, IPv6, ICMP, IPsec</td>
+                </tr>
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-emerald-400">Layer 2</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Data Link</td>
+                  <td class="py-2.5 px-3 font-mono text-emerald-300 font-bold">Frame</td>
+                  <td class="py-2.5 px-3 text-gray-300">Physical node-to-node transfer, MAC addressing, collision/error check (CRC).</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">L2 Switches, Bridges, Ethernet 802.3, ARP, VLANs</td>
+                </tr>
+                <tr class="hover:bg-gray-800/40">
+                  <td class="py-2.5 px-3 font-mono font-bold text-amber-400">Layer 1</td>
+                  <td class="py-2.5 px-3 font-semibold text-white">Physical</td>
+                  <td class="py-2.5 px-3 font-mono text-amber-300 font-bold">Bits</td>
+                  <td class="py-2.5 px-3 text-gray-300">Electrical, optical, or radio transmission of raw bits on wire/air.</td>
+                  <td class="py-2.5 px-3 font-mono text-cyan-300">Cables (Cat6, Fiber SFP+), Hubs, Modems, RJ45</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Encapsulation Visual Illustration (SVG) -->
+          <div class="mt-6 p-4 rounded-xl bg-gray-950 border border-gray-800">
+            <h4 class="text-xs font-mono text-gray-400 uppercase tracking-wider mb-3">Interactive Encapsulation Pipeline (Sender Stack)</h4>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 p-2 rounded bg-pink-900/20 border border-pink-700/40 text-xs">
+                <span class="px-2 py-0.5 rounded font-mono font-bold bg-pink-500/20 text-pink-300">L7-L5</span>
+                <span class="font-mono text-gray-200">Application Payload (HTTP Data)</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 rounded bg-purple-900/20 border border-purple-700/40 text-xs">
+                <span class="px-2 py-0.5 rounded font-mono font-bold bg-purple-500/20 text-purple-300">L4 Header</span>
+                <span class="font-mono text-gray-300">Src Port: 54120 | Dst Port: 443 | Seq / Ack | Window Size</span>
+                <span class="text-gray-400 font-mono">+ [ Payload ]</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 rounded bg-blue-900/20 border border-blue-700/40 text-xs">
+                <span class="px-2 py-0.5 rounded font-mono font-bold bg-blue-500/20 text-blue-300">L3 Header</span>
+                <span class="font-mono text-gray-300">Src IP: 192.168.1.50 | Dst IP: 142.250.190.46 | TTL: 64 | Proto: 6 (TCP)</span>
+                <span class="text-gray-400 font-mono">+ [ TCP Segment ]</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 rounded bg-emerald-900/20 border border-emerald-700/40 text-xs">
+                <span class="px-2 py-0.5 rounded font-mono font-bold bg-emerald-500/20 text-emerald-300">L2 Header</span>
+                <span class="font-mono text-gray-300">Dst MAC: Gateway MAC | Src MAC: Client NIC | EtherType: 0x0800 (IPv4)</span>
+                <span class="text-gray-400 font-mono">+ [ Packet ] + [ FCS CRC 4-Bytes ]</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 rounded bg-amber-900/20 border border-amber-700/40 text-xs">
+                <span class="px-2 py-0.5 rounded font-mono font-bold bg-amber-500/20 text-amber-300">L1 Bits</span>
+                <span class="font-mono text-amber-300">01001000 01100101 01101100 01101100 01101111 (Physical wire voltages / optical pulses)</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Topic 1.2: Network Topologies -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-topologies">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-pink-400"></span> Physical & Logical Network Topologies
+            </h3>
+            <button onclick="toggleTopicMastery('topic-topologies')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <!-- Star Topology -->
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i> Star Topology (Standard LAN)
+              </div>
+              <p class="text-gray-300">All edge hosts connect directly to a central switch. Single cable failure only disconnects that node. Central switch is single point of failure (mitigated via dual-homed LACP).</p>
+              <div class="text-[11px] text-cyan-300 font-mono">Dominant in modern enterprise access layers.</div>
+            </div>
+
+            <!-- Full Mesh vs Partial Mesh -->
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="share-2" class="w-4 h-4 text-cyan-400"></i> Mesh Topology (WAN / Core)
+              </div>
+              <p class="text-gray-300">Every node connects to every other node ($N \times (N-1) / 2$ links). Maximum redundancy and zero single point of failure. Expensive; Partial Mesh is used for practical enterprise WANs.</p>
+              <div class="text-[11px] text-cyan-300 font-mono">Used in ISP backbones & mission-critical sites.</div>
+            </div>
+
+            <!-- Spine-and-Leaf Clos -->
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-white flex items-center gap-2">
+                <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i> Spine-and-Leaf (Modern DC)
+              </div>
+              <p class="text-gray-300">Every Leaf switch connects to every Spine switch. No leaf-to-leaf or spine-to-spine links. Every server is exactly 2 hops away from any other server, enabling ultra-low predictable East-West latency.</p>
+              <div class="text-[11px] text-cyan-300 font-mono">Standard for hyperscale & cloud datacenters.</div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 2: IP ADDRESSING, SUBNETTING & CALCULATOR
+           ==================================================================== -->
+      <section id="mod-subnet" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-cyan-400 uppercase tracking-widest">Module 02</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="binary" class="w-6 h-6 text-cyan-400"></i> IPv4, IPv6 & Subnetting Mastery
+            </h2>
+          </div>
+        </div>
+
+        <!-- Interactive Subnet Calculator Widget -->
+        <div class="glass-panel p-6 rounded-xl border border-cyan-500/30 shadow-lg shadow-cyan-950/40 space-y-5" data-topic-id="topic-subnet-calc">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="calculator" class="w-5 h-5 text-cyan-400"></i> Live IPv4 Subnet Calculator & CIDR Visualizer
+              </h3>
+              <p class="text-xs text-gray-400">Enter any IPv4 address with CIDR prefix to inspect bit-level subnet architecture.</p>
+            </div>
+            <button onclick="toggleTopicMastery('topic-subnet-calc')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300 self-start sm:self-auto">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <!-- Input Bar -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-500 font-mono text-sm">IP/CIDR:</span>
+              <input type="text" id="calc-input" value="192.168.10.50/26" class="w-full pl-24 pr-4 py-2.5 rounded-lg bg-gray-950 border border-gray-700 text-white font-mono text-sm focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400" placeholder="e.g. 10.0.0.1/24">
+            </div>
+            <button onclick="runSubnetCalculator()" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-medium text-xs shadow-md transition flex items-center justify-center gap-2">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i> Recalculate
+            </button>
+          </div>
+
+          <!-- Error Alert -->
+          <div id="calc-error" class="hidden p-3 rounded-lg bg-rose-950/40 border border-rose-800 text-rose-300 text-xs"></div>
+
+          <!-- Results Grid -->
+          <div id="calc-results" class="space-y-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800">
+                <span class="text-gray-400 block mb-0.5">Network Address ID</span>
+                <span id="res-net-id" class="font-mono font-bold text-cyan-400 text-sm">--</span>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800">
+                <span class="text-gray-400 block mb-0.5">Subnet Mask</span>
+                <span id="res-mask" class="font-mono font-bold text-white text-sm">--</span>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800">
+                <span class="text-gray-400 block mb-0.5">Broadcast Address</span>
+                <span id="res-broadcast" class="font-mono font-bold text-purple-400 text-sm">--</span>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800">
+                <span class="text-gray-400 block mb-0.5">Wildcard Mask (ACLs)</span>
+                <span id="res-wildcard" class="font-mono font-bold text-amber-400 text-sm">--</span>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800 col-span-2">
+                <span class="text-gray-400 block mb-0.5">Usable Host Range</span>
+                <span id="res-range" class="font-mono font-bold text-emerald-400 text-sm">--</span>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800">
+                <span class="text-gray-400 block mb-0.5">Usable Host Count</span>
+                <span id="res-usable" class="font-mono font-bold text-white text-sm">--</span>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900/80 border border-gray-800">
+                <span class="text-gray-400 block mb-0.5">Total Addresses</span>
+                <span id="res-total" class="font-mono font-bold text-gray-300 text-sm">--</span>
+              </div>
+            </div>
+
+            <!-- Scope & Class Indicator -->
+            <div class="p-2.5 rounded-lg bg-gray-950/60 border border-gray-800 flex items-center justify-between text-xs font-mono">
+              <span class="text-gray-400">Address Classification:</span>
+              <span id="res-class" class="text-cyan-300 font-bold">--</span>
+            </div>
+
+            <!-- Bit-Level Visualizer -->
+            <div class="p-4 rounded-xl bg-gray-950 border border-gray-800">
+              <span class="text-xs font-mono text-gray-400 block mb-2 uppercase tracking-wider">32-Bit Binary Bitmask Visualization</span>
+              <div id="res-binary-visual"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Topic 2.2: RFC 1918 Private Ranges & Special IPv4 Addresses -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-rfc1918">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span> RFC 1918 Private Addressing & Special Purpose Blocks
+            </h3>
+            <button onclick="toggleTopicMastery('topic-rfc1918')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            RFC 1918 sets aside three non-routable address ranges for internal private enterprise networks. These addresses cannot be routed across the public Internet and require Network Address Translation (NAT) to access Internet resources.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-cyan-800/40 space-y-1">
+              <span class="text-cyan-400 font-bold text-sm block">10.0.0.0 /8</span>
+              <div class="text-gray-300">10.0.0.0 — 10.255.255.255</div>
+              <div class="text-gray-400 text-[11px]">16,777,216 addresses (Class A). Default for enterprise campuses & cloud VPCs.</div>
+            </div>
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-blue-800/40 space-y-1">
+              <span class="text-blue-400 font-bold text-sm block">172.16.0.0 /12</span>
+              <div class="text-gray-300">172.16.0.0 — 172.31.255.255</div>
+              <div class="text-gray-400 text-[11px]">1,048,576 addresses (16 contiguous /16 blocks). Common for DMZs & VPN pools.</div>
+            </div>
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-emerald-800/40 space-y-1">
+              <span class="text-emerald-400 font-bold text-sm block">192.168.0.0 /16</span>
+              <div class="text-gray-300">192.168.0.0 — 192.168.255.255</div>
+              <div class="text-gray-400 text-[11px]">65,536 addresses (256 contiguous /24 blocks). Ubiquitous in SOHO & branch offices.</div>
+            </div>
+          </div>
+
+          <!-- Special addresses table -->
+          <div class="mt-4 p-4 rounded-lg bg-gray-950 border border-gray-800 text-xs">
+            <div class="font-bold text-gray-300 mb-2 font-mono">Special Purpose IPv4 Ranges Every Admin Must Know:</div>
+            <ul class="space-y-1.5 text-gray-400">
+              <li><strong class="text-amber-400 font-mono">127.0.0.0/8 (Loopback):</strong> Localhost software loopback interface (<code class="text-white">127.0.0.1</code>). Packets never leave the local host NIC.</li>
+              <li><strong class="text-rose-400 font-mono">169.254.0.0/16 (APIPA):</strong> Automatic Private IP Addressing. Assigned by OS when DHCP server fails to respond. If you see this, DHCP is down or blocked!</li>
+              <li><strong class="text-purple-400 font-mono">224.0.0.0/4 (Multicast):</strong> Class D range (e.g., <code class="text-white">224.0.0.5</code> for OSPF All Routers, <code class="text-white">224.0.0.102</code> for HSRP).</li>
+              <li><strong class="text-cyan-400 font-mono">0.0.0.0/0 (Default Route):</strong> "Gateway of Last Resort" representing all unknown destinations.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Topic 2.3: IPv6 Fundamentals -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-ipv6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span> IPv6 Architecture & Address Notation
+            </h3>
+            <button onclick="toggleTopicMastery('topic-ipv6')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+          
+          <p class="text-sm text-gray-300 leading-relaxed">
+            IPv6 uses 128-bit addresses (represented as 8 groups of 4 hexadecimal digits separated by colons, e.g., <code class="text-cyan-400 font-mono">2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>). Providing $3.4 \times 10^{38}$ unique addresses, it eliminates the need for NAT and broadcast addresses (using multicast instead).
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-cyan-300 font-mono">Compression Rules:</div>
+              <ul class="list-disc list-inside space-y-1 text-gray-300">
+                <li><strong class="text-white">Omit Leading Zeros:</strong> <code class="text-cyan-400">:0042:</code> becomes <code class="text-cyan-400">:42:</code>.</li>
+                <li><strong class="text-white">Double Colon (::):</strong> Replace one contiguous sequence of all-zero 16-bit blocks with <code class="text-cyan-400">::</code> (can only be used once per address!).</li>
+                <li><strong class="text-white">Example:</strong> <code class="text-gray-400">fe80:0000:0000:0000:0202:b3ff:fe1e:8329</code> compresses to <code class="text-emerald-400">fe80::202:b3ff:fe1e:8329</code>.</li>
+              </ul>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-cyan-300 font-mono">Key Address Scopes:</div>
+              <ul class="space-y-1 text-gray-300">
+                <li><code class="text-pink-400 font-mono font-bold">2000::/3</code> — Global Unicast (Public Internet routable)</li>
+                <li><code class="text-amber-400 font-mono font-bold">fe80::/10</code> — Link-Local (Automatic for single link communication)</li>
+                <li><code class="text-purple-400 font-mono font-bold">fc00::/7</code> — Unique Local (ULA, IPv6 equivalent of RFC 1918)</li>
+                <li><code class="text-emerald-400 font-mono font-bold">ff00::/8</code> — Multicast (Replaces all IPv4 broadcasts)</li>
+                <li><code class="text-blue-400 font-mono font-bold">::1/128</code> — Loopback (Equivalent to 127.0.0.1)</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 3: SWITCHING & LAYER 2 PROTOCOLS
+           ==================================================================== -->
+      <section id="mod-switching" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Module 03</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="split" class="w-6 h-6 text-emerald-400"></i> Switching, VLANs & Spanning Tree (STP)
+            </h2>
+          </div>
+        </div>
+
+        <!-- Topic 3.1: How Switches Learn & Forward (CAM Table) -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-cam-table">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> How Layer 2 Switches Operate: Learning, Flooding, Forwarding
+            </h3>
+            <button onclick="toggleTopicMastery('topic-cam-table')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            Layer 2 switches maintain a Content Addressable Memory (CAM) table that binds physical switch ports to known MAC addresses. Switch logic operates on four fundamental rules:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="font-bold text-emerald-400 mb-1">1. Learning</div>
+              <p class="text-gray-300">Inspects the <strong class="text-white">Source MAC</strong> on incoming frame. If not present in CAM table, records [Port + MAC + VLAN + Timer].</p>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="font-bold text-cyan-400 mb-1">2. Flooding</div>
+              <p class="text-gray-300">If the <strong class="text-white">Destination MAC</strong> is unknown or is a broadcast (<code class="font-mono text-cyan-300">FF:FF:FF:FF:FF:FF</code>), switch forwards out ALL ports in the VLAN except the ingress port.</p>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="font-bold text-blue-400 mb-1">3. Forwarding / Filtering</div>
+              <p class="text-gray-300">If Destination MAC is found in CAM table on a different port, switch unicast forwards it directly out that port. If on same port, it drops (filters) it.</p>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <div class="font-bold text-amber-400 mb-1">4. Aging</div>
+              <p class="text-gray-300">CAM entries expire after an aging timer (default: 300 seconds) if no new frames arrive from that Source MAC, freeing memory.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Topic 3.2: VLANs & 802.1Q Tagging -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-vlans">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Virtual LANs (VLANs) & IEEE 802.1Q Frame Tagging
+            </h3>
+            <button onclick="toggleTopicMastery('topic-vlans')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            A VLAN logically divides a single physical switch into multiple isolated broadcast domains. Traffic between different VLANs cannot cross Layer 2; it requires a Layer 3 routing device (Router-on-a-Stick or Layer 3 Switch SVI).
+          </p>
+
+          <!-- 802.1Q Anatomy SVG -->
+          <div class="p-4 rounded-xl bg-gray-950 border border-gray-800 space-y-3">
+            <span class="text-xs font-mono text-gray-400 block uppercase tracking-wider">802.1Q 4-Byte Tag Insertion Anatomy</span>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-xs font-mono">
+              <div class="p-2.5 rounded bg-gray-900 border border-gray-700 text-center">
+                <span class="text-gray-400 block text-[10px]">Src & Dst MAC</span>
+                <span class="text-white font-bold">12 Bytes</span>
+              </div>
+              <div class="p-2.5 rounded bg-cyan-950/80 border border-cyan-500 text-center">
+                <span class="text-cyan-400 block text-[10px]">TPID (0x8100)</span>
+                <span class="text-cyan-300 font-bold">16 Bits (2 Bytes)</span>
+                <span class="text-[9px] text-gray-400 block mt-0.5">Identifies 802.1Q Frame</span>
+              </div>
+              <div class="p-2.5 rounded bg-emerald-950/80 border border-emerald-500 text-center">
+                <span class="text-emerald-400 block text-[10px]">TCI (PCP + DEI + VID)</span>
+                <span class="text-emerald-300 font-bold">16 Bits (2 Bytes)</span>
+                <span class="text-[9px] text-gray-400 block mt-0.5">12-Bit VID (0 - 4095)</span>
+              </div>
+              <div class="p-2.5 rounded bg-gray-900 border border-gray-700 text-center">
+                <span class="text-gray-400 block text-[10px]">EtherType & Payload</span>
+                <span class="text-white font-bold">46 - 1500 Bytes</span>
+              </div>
+            </div>
+            <div class="text-[11px] text-gray-400 flex flex-col sm:flex-row gap-4 pt-1">
+              <span><strong class="text-white">Access Port:</strong> Belongs to 1 VLAN; strips 802.1Q tag when forwarding to end-host PC.</span>
+              <span><strong class="text-white">Trunk Port:</strong> Carries multiple VLANs between switches with 802.1Q tags intact.</span>
+              <span><strong class="text-white">Native VLAN:</strong> Untagged traffic crossing a trunk (default: VLAN 1).</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Topic 3.3: Spanning Tree Protocol (STP / RSTP) -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-stp">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Spanning Tree Protocol (STP 802.1D & RSTP 802.1w)
+            </h3>
+            <button onclick="toggleTopicMastery('topic-stp')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            Redundant physical connections between switches cause Layer 2 broadcast storms, duplicate frames, and MAC table flapping because Ethernet frames lack a TTL field. STP solves this by electing a Root Bridge and logically blocking redundant links.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-1.5">
+              <div class="font-bold text-emerald-400 font-mono">1. Root Bridge Election</div>
+              <p class="text-gray-300">The switch with the <strong class="text-white">lowest Bridge ID (BID)</strong> wins. BID = Priority (default 32768) + SysID Ext (VLAN ID) + Base MAC Address.</p>
+              <code class="text-cyan-300 text-[11px] block">spanning-tree vlan 10 priority 4096</code>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-1.5">
+              <div class="font-bold text-cyan-400 font-mono">2. Port Roles</div>
+              <ul class="text-gray-300 space-y-1">
+                <li><strong class="text-white">Root Port (RP):</strong> Lowest cost path to Root Bridge (1 per non-root switch).</li>
+                <li><strong class="text-white">Designated Port (DP):</strong> Best port on a segment (forwards traffic).</li>
+                <li><strong class="text-white">Alternate / Blocked:</strong> Discards frames to eliminate loop.</li>
+              </ul>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-1.5">
+              <div class="font-bold text-amber-400 font-mono">3. RSTP Port States</div>
+              <div class="space-y-1 text-gray-300">
+                <div><span class="text-rose-400 font-bold">Discarding:</span> Drops user frames, listens for BPDUs.</div>
+                <div><span class="text-amber-400 font-bold">Learning:</span> Learns MACs into CAM, drops user frames.</div>
+                <div><span class="text-emerald-400 font-bold">Forwarding:</span> Fully operational data forwarding.</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 4: ROUTING, OSPF & BGP
+           ==================================================================== -->
+      <section id="mod-routing" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-blue-400 uppercase tracking-widest">Module 04</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="git-branch" class="w-6 h-6 text-blue-400"></i> Routing Architecture, OSPF & BGP
+            </h2>
+          </div>
+        </div>
+
+        <!-- Topic 4.1: Routing Table Mechanics & Longest Prefix Match -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-routing-table">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span> Routing Table Hierarchy & Longest Prefix Match
+            </h3>
+            <button onclick="toggleTopicMastery('topic-routing-table')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            When a router forwards an IP packet, it always prioritizes the <strong class="text-white">Longest Prefix Match (most specific subnet mask)</strong> regardless of Administrative Distance. Only when prefix lengths are identical does it compare Administrative Distance (AD).
+          </p>
+
+          <!-- AD Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse font-mono">
+              <thead>
+                <tr class="border-b border-gray-700 bg-gray-900/80 text-gray-400">
+                  <th class="py-2 px-3">Route Source</th>
+                  <th class="py-2 px-3">Administrative Distance (AD)</th>
+                  <th class="py-2 px-3">Default Metric</th>
+                  <th class="py-2 px-3">Category</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr class="hover:bg-gray-800/40"><td class="py-2 px-3 text-emerald-400 font-bold">Connected Interface</td><td class="py-2 px-3 font-bold text-white">0</td><td class="py-2 px-3 text-gray-400">0</td><td class="py-2 px-3 text-gray-400">Hardware Direct</td></tr>
+                <tr class="hover:bg-gray-800/40"><td class="py-2 px-3 text-cyan-400 font-bold">Static Route</td><td class="py-2 px-3 font-bold text-white">1</td><td class="py-2 px-3 text-gray-400">0</td><td class="py-2 px-3 text-gray-400">Manual Config</td></tr>
+                <tr class="hover:bg-gray-800/40"><td class="py-2 px-3 text-purple-400 font-bold">eBGP (External BGP)</td><td class="py-2 px-3 font-bold text-white">20</td><td class="py-2 px-3 text-gray-400">AS-Path, Weight, etc.</td><td class="py-2 px-3 text-gray-400">Exterior Gateway</td></tr>
+                <tr class="hover:bg-gray-800/40"><td class="py-2 px-3 text-amber-400 font-bold">EIGRP (Internal)</td><td class="py-2 px-3 font-bold text-white">90</td><td class="py-2 px-3 text-gray-400">Bandwidth + Delay</td><td class="py-2 px-3 text-gray-400">Advanced Distance Vector</td></tr>
+                <tr class="hover:bg-gray-800/40"><td class="py-2 px-3 text-blue-400 font-bold">OSPF</td><td class="py-2 px-3 font-bold text-white">110</td><td class="py-2 px-3 text-gray-400">Cost = 10^8 / Bandwidth</td><td class="py-2 px-3 text-gray-400">Link-State</td></tr>
+                <tr class="hover:bg-gray-800/40"><td class="py-2 px-3 text-rose-400 font-bold">iBGP (Internal BGP)</td><td class="py-2 px-3 font-bold text-white">200</td><td class="py-2 px-3 text-gray-400">Attributes</td><td class="py-2 px-3 text-gray-400">Exterior Gateway within AS</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Topic 4.2: OSPF Link-State Deep Dive -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-ospf">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span> OSPF (Open Shortest Path First) & Area Hierarchy
+            </h3>
+            <button onclick="toggleTopicMastery('topic-ospf')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            OSPF is an open-standard Link-State Interior Gateway Protocol (IGP) that uses Dijkstra's Shortest Path First (SPF) algorithm. Every router in an area builds a full Link-State Database (LSDB) representing the entire network topology.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-blue-300 font-mono">OSPF Neighbor State Machine:</div>
+              <ol class="space-y-1 text-gray-300 list-decimal list-inside font-mono">
+                <li><strong class="text-white">Down:</strong> No Hello packets received yet.</li>
+                <li><strong class="text-white">Init:</strong> Hello received, but local Router ID not seen in neighbor list.</li>
+                <li><strong class="text-white">2-Way:</strong> Bi-directional communication achieved. DR/BDR elected.</li>
+                <li><strong class="text-white">ExStart:</strong> Master/Slave election for sequence numbering.</li>
+                <li><strong class="text-white">Exchange:</strong> Routers exchange Database Description (DBD) packets.</li>
+                <li><strong class="text-white">Loading:</strong> Routers request missing LSAs using LSR & LSU packets.</li>
+                <li><strong class="text-emerald-400 font-bold">Full:</strong> Databases fully synchronized; shortest path computed.</li>
+              </ol>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-blue-300 font-mono">Areas & Router Roles:</div>
+              <ul class="space-y-1.5 text-gray-300">
+                <li><strong class="text-white font-mono">Backbone Area 0:</strong> Central core of all OSPF topologies. All non-zero areas must connect directly to Area 0.</li>
+                <li><strong class="text-white font-mono">Area Border Router (ABR):</strong> Sits on the boundary between Area 0 and another area; summarizes routes.</li>
+                <li><strong class="text-white font-mono">Autonomous System Boundary Router (ASBR):</strong> Connects OSPF to external routing domains (e.g., BGP or static routes).</li>
+                <li><strong class="text-white font-mono">DR / BDR:</strong> Designated Router & Backup DR reduce link-state flooding on multi-access Ethernet segments (uses multicast 224.0.0.5 & 224.0.0.6).</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Topic 4.3: BGP (Border Gateway Protocol) -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-bgp">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span> BGP Path Selection & Autonomous Systems
+            </h3>
+            <button onclick="toggleTopicMastery('topic-bgp')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            BGP is the routing protocol that powers the global Internet. Operating over TCP port 179, it uses Path-Vector logic and granular policy attributes rather than raw speed metrics to choose the best path between Autonomous Systems (ASNs).
+          </p>
+
+          <div class="p-4 rounded-xl bg-gray-950 border border-gray-800">
+            <div class="font-bold text-gray-300 text-xs font-mono uppercase mb-2">BGP Best Path Decision Algorithm (Strict Order):</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs font-mono">
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">1. Weight</span> (Highest, Cisco proprietary local)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">2. LOCAL_PREF</span> (Highest, standard across AS)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">3. Locally Originated</span> (network/aggregate cmd)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">4. AS_PATH</span> (Shortest autonomous system hops)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">5. Origin Code</span> (IGP &lt; EGP &lt; Incomplete)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">6. MED</span> (Lowest Multi-Exit Discriminator)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">7. Neighbor Type</span> (eBGP over iBGP)</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">8. Lowest IGP Cost</span> to BGP next-hop</div>
+              <div class="p-2 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold">9. Lowest BGP Router ID</span> (Tie-breaker)</div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 5: CORE SERVICES (DNS, DHCP, NAT, MONITORING)
+           ==================================================================== -->
+      <section id="mod-services" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-amber-400 uppercase tracking-widest">Module 05</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="server" class="w-6 h-6 text-amber-400"></i> Core Network Services (DNS, DHCP, NAT & Telemetry)
+            </h2>
+          </div>
+        </div>
+
+        <!-- Topic 5.1: DNS Architecture -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-dns">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span> Domain Name System (DNS) Hierarchical Resolution
+            </h3>
+            <button onclick="toggleTopicMastery('topic-dns')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            DNS translates human-readable hostnames (<code class="text-amber-400 font-mono">api.example.com</code>) into IP addresses. It uses a distributed, hierarchical database starting from Root servers down to Authoritative Name Servers.
+          </p>
+
+          <!-- Record Types Matrix -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-xs font-mono">
+            <div class="p-2.5 rounded bg-gray-900 border border-gray-800"><span class="text-cyan-400 font-bold block">A</span> IPv4 Address mapping</div>
+            <div class="p-2.5 rounded bg-gray-900 border border-gray-800"><span class="text-purple-400 font-bold block">AAAA</span> IPv6 Address mapping</div>
+            <div class="p-2.5 rounded bg-gray-900 border border-gray-800"><span class="text-amber-400 font-bold block">CNAME</span> Canonical alias to another domain</div>
+            <div class="p-2.5 rounded bg-gray-900 border border-gray-800"><span class="text-emerald-400 font-bold block">MX</span> Mail Exchange destination server</div>
+            <div class="p-2.5 rounded bg-gray-900 border border-gray-800"><span class="text-pink-400 font-bold block">TXT</span> Text records (SPF, DKIM, DMARC)</div>
+            <div class="p-2.5 rounded bg-gray-900 border border-gray-800"><span class="text-blue-400 font-bold block">PTR</span> Reverse DNS (IP to hostname)</div>
+          </div>
+        </article>
+
+        <!-- Topic 5.2: DHCP & The DORA Process -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-dhcp">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span> Dynamic Host Configuration Protocol (DHCP) & DORA
+            </h3>
+            <button onclick="toggleTopicMastery('topic-dhcp')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            DHCP automates IP assignment, default gateway configuration, DNS servers, and lease management using UDP ports 67 (Server) and 68 (Client).
+          </p>
+
+          <!-- DORA Sequence Graphic -->
+          <div class="p-4 rounded-xl bg-gray-950 border border-gray-800 space-y-2">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+              <div class="p-3 rounded-lg bg-gray-900 border border-cyan-800/50">
+                <div class="font-bold text-cyan-400 font-mono">1. DISCOVER</div>
+                <div class="text-[11px] text-gray-400 mt-1">Client broadcasts (255.255.255.255) searching for available DHCP servers.</div>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900 border border-blue-800/50">
+                <div class="font-bold text-blue-400 font-mono">2. OFFER</div>
+                <div class="text-[11px] text-gray-400 mt-1">Server reserves an IP from pool and offers it to client's MAC address.</div>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900 border border-amber-800/50">
+                <div class="font-bold text-amber-400 font-mono">3. REQUEST</div>
+                <div class="text-[11px] text-gray-400 mt-1">Client broadcasts accepting the chosen server's offer and declines other offers.</div>
+              </div>
+              <div class="p-3 rounded-lg bg-gray-900 border border-emerald-800/50">
+                <div class="font-bold text-emerald-400 font-mono">4. ACKNOWLEDGE</div>
+                <div class="text-[11px] text-gray-400 mt-1">Server confirms lease terms, DNS servers, gateway, and subnet mask.</div>
+              </div>
+            </div>
+            <div class="text-[11px] text-gray-400 pt-2 border-t border-gray-800">
+              <strong class="text-cyan-300 font-mono">DHCP Relay (ip helper-address):</strong> Routers block broadcasts by default. When clients and DHCP servers sit on different VLANs/subnets, the router interface requires <code class="text-white font-mono">ip helper-address &lt;DHCP-Server-IP&gt;</code> to convert the Layer 2 broadcast into a unicast packet forwarded directly to the DHCP server.
+            </div>
+          </div>
+        </article>
+
+        <!-- Topic 5.3: NAT & PAT Terminology -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-nat">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span> NAT & PAT (Port Address Translation / Overload)
+            </h3>
+            <button onclick="toggleTopicMastery('topic-nat')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <span class="text-cyan-400 font-bold block mb-1">Inside Local</span>
+              <p class="text-gray-300">The private IP address assigned to an internal host on the inside network (e.g. <code class="text-white">192.168.1.50</code>).</p>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <span class="text-blue-400 font-bold block mb-1">Inside Global</span>
+              <p class="text-gray-300">The registered public IP address that represents the inside host to the outside world (e.g. <code class="text-white">203.0.113.1</code>).</p>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <span class="text-emerald-400 font-bold block mb-1">Outside Local</span>
+              <p class="text-gray-300">The IP address of an outside host as it appears to the inside network (usually identical to Outside Global).</p>
+            </div>
+            <div class="p-3 rounded-lg bg-gray-900/60 border border-gray-800">
+              <span class="text-purple-400 font-bold block mb-1">Outside Global</span>
+              <p class="text-gray-300">The actual public IP address assigned to an external host on the Internet (e.g. <code class="text-white">198.51.100.25</code>).</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 6: SECURITY, ACLS & VPNS
+           ==================================================================== -->
+      <section id="mod-security" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-rose-400 uppercase tracking-widest">Module 06</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-6 h-6 text-rose-400"></i> Network Security, ACLs & IPsec VPNs
+            </h2>
+          </div>
+        </div>
+
+        <!-- Topic 6.1: Firewalls & ACLs -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-firewalls-acls">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-rose-400"></span> Firewalls & Access Control Lists (Standard vs Extended)
+            </h3>
+            <button onclick="toggleTopicMastery('topic-firewalls-acls')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-white font-mono flex items-center gap-2">
+                <i data-lucide="filter" class="w-4 h-4 text-cyan-400"></i> Standard ACLs (1-99 & 1300-1999)
+              </div>
+              <ul class="space-y-1 text-gray-300">
+                <li>• Filters based <strong class="text-white">ONLY on Source IP address</strong>.</li>
+                <li>• Cannot inspect protocols, TCP/UDP ports, or destinations.</li>
+                <li>• <strong class="text-amber-400">Best Practice:</strong> Place Standard ACLs as close to the <strong class="text-white">DESTINATION</strong> as possible so valid traffic isn't dropped prematurely elsewhere.</li>
+              </ul>
+              <code class="block p-2 rounded bg-gray-950 text-cyan-300 font-mono text-[11px]">access-list 10 permit 192.168.1.0 0.0.0.255</code>
+            </div>
+
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-white font-mono flex items-center gap-2">
+                <i data-lucide="shield" class="w-4 h-4 text-rose-400"></i> Extended ACLs (100-199 & 2000-2699)
+              </div>
+              <ul class="space-y-1 text-gray-300">
+                <li>• Filters on Source IP, Destination IP, Protocol (TCP/UDP/ICMP), and Port numbers.</li>
+                <li>• Supports state tracking options (<code class="text-cyan-400">established</code>).</li>
+                <li>• <strong class="text-amber-400">Best Practice:</strong> Place Extended ACLs as close to the <strong class="text-white">SOURCE</strong> as possible to save router CPU and network bandwidth.</li>
+              </ul>
+              <code class="block p-2 rounded bg-gray-950 text-cyan-300 font-mono text-[11px]">access-list 101 permit tcp 192.168.1.0 0.0.0.255 any eq 443</code>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg bg-rose-950/30 border border-rose-800/40 text-xs text-rose-200">
+            <strong class="font-bold">CRITICAL RULE:</strong> Every ACL has an invisible <code class="font-mono bg-rose-900/60 px-1 py-0.5 rounded text-white">deny any any</code> (implicit deny) at the very bottom. If incoming packets don't match any permit rule above, they are silently dropped!
+          </div>
+        </article>
+
+        <!-- Topic 6.2: IPsec VPN Protocol Suite -->
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-vpn">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-rose-400"></span> Site-to-Site IPsec VPN Architecture (IKE Ph1 & Ph2)
+            </h3>
+            <button onclick="toggleTopicMastery('topic-vpn')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <p class="text-sm text-gray-300 leading-relaxed">
+            IPsec provides confidentiality, integrity, authentication, and anti-replay protection across insecure public networks through a two-phase negotiation.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <span class="text-cyan-400 font-bold block text-sm">IKE Phase 1 (ISAKMP SA)</span>
+              <p class="text-gray-300 font-sans">Negotiates a secure encrypted control channel between the two gateway routers.</p>
+              <ul class="text-gray-400 space-y-1">
+                <li>• <strong class="text-white">HAGLE:</strong> Hash (SHA-256), Authentication (Pre-Shared Key / RSA), DH Group (Diffie-Hellman Group 14/19/21), Lifetime (86400s), Encryption (AES-GCM-256).</li>
+                <li>• Port: UDP 500 (UDP 4500 if NAT Traversal is detected).</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <span class="text-emerald-400 font-bold block text-sm">IKE Phase 2 (IPsec SA / Transform Set)</span>
+              <p class="text-gray-300 font-sans">Negotiates the actual encrypted data tunnel parameters used to protect user traffic.</p>
+              <ul class="text-gray-400 space-y-1">
+                <li>• <strong class="text-white">ESP (Protocol 50):</strong> Encapsulating Security Payload (Provides both encryption & integrity).</li>
+                <li>• <strong class="text-white">AH (Protocol 51):</strong> Authentication Header (Integrity only; cannot pass through NAT).</li>
+                <li>• Mode: <strong class="text-white">Tunnel Mode</strong> (encapsulates entire original IP packet).</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 7: ADMIN TROUBLESHOOTING TOOLKIT & COMMAND CHEATSHEET
+           ==================================================================== -->
+      <section id="mod-troubleshooting" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-teal-400 uppercase tracking-widest">Module 07</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="wrench" class="w-6 h-6 text-teal-400"></i> Network Admin Troubleshooting & Diagnostic Toolkit
+            </h2>
+          </div>
+        </div>
+
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-troubleshoot-cmds">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-teal-400"></span> Essential Diagnostic Commands by Category
+            </h3>
+            <button onclick="toggleTopicMastery('topic-troubleshoot-cmds')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <!-- Connectivity -->
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="text-cyan-400 font-bold flex items-center gap-1.5 font-sans">
+                <i data-lucide="activity" class="w-4 h-4"></i> Connectivity & Path Testing
+              </div>
+              <div class="space-y-1 text-gray-300">
+                <div><code class="text-white font-bold">ping -c 4 8.8.8.8</code> — ICMP reachability & RTT latency</div>
+                <div><code class="text-white font-bold">traceroute -n 1.1.1.1</code> — Hop-by-hop latency & gateway drops</div>
+                <div><code class="text-white font-bold">mtr -rwz 8.8.8.8</code> — Real-time ping + traceroute loss analytics</div>
+              </div>
+            </div>
+
+            <!-- Socket & Port Inspection -->
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="text-emerald-400 font-bold flex items-center gap-1.5 font-sans">
+                <i data-lucide="radio" class="w-4 h-4"></i> Sockets & Listening Ports
+              </div>
+              <div class="space-y-1 text-gray-300">
+                <div><code class="text-white font-bold">ss -tulpn</code> — Modern socket statistics (replaces netstat)</div>
+                <div><code class="text-white font-bold">netstat -rn</code> — Display kernel routing table</div>
+                <div><code class="text-white font-bold">curl -Iv https://example.com</code> — Inspect TLS handshake & headers</div>
+              </div>
+            </div>
+
+            <!-- Packet Capture -->
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="text-amber-400 font-bold flex items-center gap-1.5 font-sans">
+                <i data-lucide="file-code" class="w-4 h-4"></i> Packet Capture (tcpdump & Wireshark)
+              </div>
+              <div class="space-y-1 text-gray-300">
+                <div><code class="text-white font-bold">tcpdump -i eth0 -nn -vv "tcp port 443"</code> — Capture HTTPS packets</div>
+                <div><code class="text-white font-bold">tcpdump -i any icmp</code> — Live ICMP monitor on all interfaces</div>
+                <div><code class="text-white font-bold">ip.addr == 192.168.1.1 &amp;&amp; tcp.flags.syn==1</code> — Wireshark filter</div>
+              </div>
+            </div>
+
+            <!-- Discovery & Scanning -->
+            <div class="p-3.5 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="text-purple-400 font-bold flex items-center gap-1.5 font-sans">
+                <i data-lucide="scan" class="w-4 h-4"></i> Security & Port Scanning (Nmap)
+              </div>
+              <div class="space-y-1 text-gray-300">
+                <div><code class="text-white font-bold">nmap -sS -p 22,80,443 192.168.1.0/24</code> — Fast SYN port sweep</div>
+                <div><code class="text-white font-bold">nmap -sV -O 192.168.1.50</code> — Service version & OS fingerprinting</div>
+                <div><code class="text-white font-bold">dig +trace +short example.com</code> — Full iterative DNS trace</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 8: SPINE-LEAF, VXLAN & CLOUD NETWORKING
+           ==================================================================== -->
+      <section id="mod-datacenter" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-indigo-400 uppercase tracking-widest">Module 08</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="cloud" class="w-6 h-6 text-indigo-400"></i> Spine-Leaf, VXLAN & Cloud Architecture
+            </h2>
+          </div>
+        </div>
+
+        <article class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4" data-topic-id="topic-spine-leaf">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-400"></span> Clos Spine-and-Leaf & Network Overlays (VXLAN / EVPN)
+            </h3>
+            <button onclick="toggleTopicMastery('topic-spine-leaf')" class="topic-check-btn px-3 py-1 rounded text-xs border border-gray-700 bg-gray-800 hover:border-emerald-500 text-gray-300">
+              <i data-lucide="circle" class="w-3.5 h-3.5 inline-block mr-1"></i> Mark as Mastered
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-cyan-300 font-mono">Spine-and-Leaf Clos Fabric:</div>
+              <ul class="text-gray-300 space-y-1.5">
+                <li>• Eliminates traditional Spanning Tree blocking in modern datacenters.</li>
+                <li>• All links forward simultaneously using Layer 3 ECMP (Equal-Cost Multi-Path).</li>
+                <li>• Predictable latency: exactly 2 hops between any pair of servers.</li>
+                <li>• High scalability: add Spine switches to expand bandwidth, add Leaf switches to expand server ports.</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-lg bg-gray-900/60 border border-gray-800 space-y-2">
+              <div class="font-bold text-purple-300 font-mono">VXLAN (RFC 7348) & EVPN:</div>
+              <ul class="text-gray-300 space-y-1.5">
+                <li>• Encapsulates Layer 2 Ethernet frames inside Layer 3 UDP packets (port 4789).</li>
+                <li>• Expands VLAN limit from 4,096 to <strong class="text-white">16 million Virtual Network Identifiers (VNIs)</strong>.</li>
+                <li>• Decouples virtual workloads (Overlay) from the physical routing network (Underlay).</li>
+                <li>• BGP EVPN serves as the modern control plane for MAC/IP route distribution.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 9: INTERACTIVE PACKET FLOW SIMULATOR
+           ==================================================================== -->
+      <section id="mod-simulator" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Interactive Lab 01</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="activity" class="w-6 h-6 text-emerald-400"></i> Interactive Packet Flow Simulator
+            </h2>
+          </div>
+        </div>
+
+        <div class="glass-panel p-6 rounded-xl border border-emerald-500/30 space-y-5">
+          <!-- Controller & Scenario Selector -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 id="sim-scenario-title" class="text-base font-bold text-white">Cross-Subnet Web Request</h3>
+              <p class="text-xs text-gray-400">Step through packet life-cycle: L2 MAC rewrites, L3 TTL decrements, and NAT translations.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="renderSimScenario('crossSubnet')" class="px-3 py-1.5 rounded bg-gray-800 hover:bg-gray-700 text-xs text-cyan-300 font-mono">Scenario: Web HTTPS</button>
+              <button onclick="renderSimScenario('sameSubnet')" class="px-3 py-1.5 rounded bg-gray-800 hover:bg-gray-700 text-xs text-emerald-300 font-mono">Scenario: Local ARP/Ping</button>
+            </div>
+          </div>
+
+          <!-- SVG Visual Topology Canvas -->
+          <div class="p-6 rounded-xl bg-gray-950 border border-gray-800 overflow-x-auto">
+            <svg viewBox="0 0 850 180" class="w-full min-w-[700px] h-44 select-none">
+              <defs>
+                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#06b6d4" />
+                  <stop offset="100%" stop-color="#3b82f6" />
+                </linearGradient>
+              </defs>
+
+              <!-- Connection Lines -->
+              <line x1="80" y1="90" x2="250" y2="90" stroke="#374151" stroke-width="2" />
+              <line x1="250" y1="90" x2="420" y2="90" stroke="#374151" stroke-width="2" />
+              <line x1="420" y1="90" x2="590" y2="90" stroke="#374151" stroke-width="2" />
+              <line x1="590" y1="90" x2="760" y2="90" stroke="#374151" stroke-width="2" />
+
+              <!-- Animated Packet Trail -->
+              <line x1="80" y1="90" x2="760" y2="90" stroke="url(#lineGrad)" stroke-width="2" class="packet-trail opacity-50" />
+
+              <!-- Node 1: PC1 -->
+              <g id="sim-svg-pc1" class="net-node sim-node-element" transform="translate(80, 90)">
+                <circle r="32" fill="#111827" stroke="#4b5563" stroke-width="2" />
+                <text y="-5" text-anchor="middle" fill="#06b6d4" font-size="11" font-weight="bold" font-family="monospace">PC-1</text>
+                <text y="10" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="monospace">192.168.1.50</text>
+              </g>
+
+              <!-- Node 2: Switch 1 -->
+              <g id="sim-svg-switch1" class="net-node sim-node-element" transform="translate(250, 90)">
+                <circle r="32" fill="#111827" stroke="#4b5563" stroke-width="2" />
+                <text y="-5" text-anchor="middle" fill="#10b981" font-size="11" font-weight="bold" font-family="monospace">SW-01</text>
+                <text y="10" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="monospace">VLAN 10</text>
+              </g>
+
+              <!-- Node 3: Router R1 -->
+              <g id="sim-svg-router1" class="net-node sim-node-element" transform="translate(420, 90)">
+                <circle r="32" fill="#111827" stroke="#4b5563" stroke-width="2" />
+                <text y="-5" text-anchor="middle" fill="#3b82f6" font-size="11" font-weight="bold" font-family="monospace">Router R1</text>
+                <text y="10" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="monospace">192.168.1.1</text>
+              </g>
+
+              <!-- Node 4: Firewall / NAT -->
+              <g id="sim-svg-firewall" class="net-node sim-node-element" transform="translate(590, 90)">
+                <circle r="32" fill="#111827" stroke="#4b5563" stroke-width="2" />
+                <text y="-5" text-anchor="middle" fill="#f43f5e" font-size="11" font-weight="bold" font-family="monospace">Firewall</text>
+                <text y="10" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="monospace">PAT Overload</text>
+              </g>
+
+              <!-- Node 5: Server / PC2 -->
+              <g id="sim-svg-server" class="net-node sim-node-element" transform="translate(760, 90)">
+                <circle r="32" fill="#111827" stroke="#4b5563" stroke-width="2" />
+                <text y="-5" text-anchor="middle" fill="#a855f7" font-size="11" font-weight="bold" font-family="monospace">Web Server</text>
+                <text y="10" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="monospace">198.51.100.25</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Simulation Step Description & Header Box -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span id="sim-step-indicator" class="text-xs font-mono text-cyan-400 font-bold">Step 1 of 5</span>
+              <div class="flex gap-2">
+                <button id="sim-btn-prev" onclick="simPrevStep()" class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-xs text-white disabled:opacity-40">Previous</button>
+                <button id="sim-btn-play" onclick="simPlayToggle()" class="px-3 py-1 rounded bg-cyan-600 hover:bg-cyan-500 text-xs text-white flex items-center">
+                  <i data-lucide="play" class="w-3.5 h-3.5 inline-block mr-1"></i> Auto Play
+                </button>
+                <button id="sim-btn-next" onclick="simNextStep()" class="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-xs text-white disabled:opacity-40">Next Step</button>
+                <button onclick="simReset()" class="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 text-xs text-gray-400" title="Reset"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+              <h4 id="sim-step-title" class="font-bold text-white text-sm">--</h4>
+              <p id="sim-step-desc" class="text-xs text-gray-300 leading-relaxed">--</p>
+              
+              <!-- Live Header Inspector -->
+              <div class="pt-2 border-t border-gray-800 space-y-1 font-mono text-xs">
+                <div class="text-emerald-400"><span class="text-gray-500">L2 (Ethernet):</span> <span id="sim-hdr-l2">--</span></div>
+                <div class="text-blue-400"><span class="text-gray-500">L3 (IP):</span> <span id="sim-hdr-l3">--</span></div>
+                <div class="text-purple-400"><span class="text-gray-500">L4 (Transport):</span> <span id="sim-hdr-l4">--</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 10: INTERACTIVE CLI DIAGNOSTIC TERMINAL
+           ==================================================================== -->
+      <section id="mod-terminal" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-amber-400 uppercase tracking-widest">Interactive Lab 02</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="terminal" class="w-6 h-6 text-amber-400"></i> Interactive Network CLI Simulator
+            </h2>
+          </div>
+        </div>
+
+        <div class="cli-window">
+          <!-- Terminal Header -->
+          <div class="cli-header">
+            <div class="flex items-center space-x-2">
+              <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+              <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+              <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+              <span class="ml-2 text-xs font-mono text-gray-400">netadmin@Core-SW01: ~ (SSH v2)</span>
+            </div>
+            <div class="text-[11px] font-mono text-gray-500 hidden sm:block">Type <span class="text-cyan-400 font-bold">help</span> for commands</div>
+          </div>
+
+          <!-- Terminal Screen Output -->
+          <div id="cli-output-log" class="p-4 h-80 overflow-y-auto space-y-2 font-mono text-xs text-gray-300">
+            <div class="text-gray-400">NetAdmin OS Diagnostic Console [Version 14.2.1]</div>
+            <div class="text-gray-500">Type <span class="text-cyan-400 font-bold">help</span> to list commands (<code class="text-white">ping</code>, <code class="text-white">traceroute</code>, <code class="text-white">show ip route</code>, <code class="text-white">show vlan</code>, <code class="text-white">arp -a</code>, <code class="text-white">subnet</code>).</div>
+          </div>
+
+          <!-- Terminal Input Row -->
+          <div class="p-2.5 bg-gray-950 border-t border-gray-800 flex items-center">
+            <span class="text-emerald-400 font-mono text-xs font-bold mr-2">Core-SW01#</span>
+            <input type="text" id="cli-input-field" class="flex-1 bg-transparent border-0 outline-none text-white font-mono text-xs" placeholder="ping 8.8.8.8..." autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 11: NETWORK PORT REFERENCE MATRIX
+           ==================================================================== -->
+      <section id="mod-ports" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-purple-400 uppercase tracking-widest">Reference 01</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="list-filter" class="w-6 h-6 text-purple-400"></i> Network Port Reference Matrix
+            </h2>
+          </div>
+        </div>
+
+        <div class="glass-panel p-6 rounded-xl border border-gray-800 space-y-4">
+          <!-- Filter Controls -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <input type="text" id="port-search-input" placeholder="Search port number (e.g. 443, 22), protocol, or service..." class="w-full px-4 py-2 rounded-lg bg-gray-950 border border-gray-700 text-xs text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <select id="port-cat-filter" class="px-3 py-2 rounded-lg bg-gray-950 border border-gray-700 text-xs text-gray-300 focus:outline-none focus:border-cyan-400">
+              <option value="all">All Categories</option>
+              <option value="Web">Web Services</option>
+              <option value="Remote Access">Remote Access</option>
+              <option value="Email">Email Protocols</option>
+              <option value="Infrastructure">Infrastructure (DNS, DHCP, NTP)</option>
+              <option value="Routing">Routing Protocols</option>
+              <option value="Security">Security & VPN</option>
+              <option value="Database">Databases</option>
+            </select>
+          </div>
+
+          <!-- Port Table -->
+          <div class="overflow-x-auto max-h-96 overflow-y-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="sticky top-0 bg-gray-900 border-b border-gray-700 text-gray-400 uppercase font-mono">
+                <tr>
+                  <th class="py-2.5 px-3">Port</th>
+                  <th class="py-2.5 px-3">Protocol</th>
+                  <th class="py-2.5 px-3">Service Name</th>
+                  <th class="py-2.5 px-3">Category</th>
+                  <th class="py-2.5 px-3">Purpose & Security Considerations</th>
+                </tr>
+              </thead>
+              <tbody id="port-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           MODULE 12: CERTIFICATION PRACTICE EXAM QUIZ
+           ==================================================================== -->
+      <section id="mod-quiz" class="space-y-6">
+        <div class="border-b border-gray-800 pb-3 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-mono text-rose-400 uppercase tracking-widest">Self-Assessment</span>
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+              <i data-lucide="award" class="w-6 h-6 text-rose-400"></i> Network Administrator Knowledge Exam
+            </h2>
+          </div>
+        </div>
+
+        <div class="glass-panel p-6 rounded-xl border border-rose-500/30">
+          <div id="quiz-container"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======================================================================
+       GLOBAL SEARCH MODAL (Ctrl + K)
+       ====================================================================== -->
+  <div id="search-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-start justify-center pt-20 px-4">
+    <div class="glass-panel w-full max-w-xl rounded-2xl border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-4 border-b border-gray-800 flex items-center gap-3 bg-gray-900/80">
+        <i data-lucide="search" class="w-5 h-5 text-cyan-400"></i>
+        <input type="text" id="search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search any topic, protocol, command, or port..." class="w-full bg-transparent text-sm text-white focus:outline-none placeholder-gray-500 font-sans">
+        <button onclick="closeSearchModal()" class="text-gray-400 hover:text-white text-xs px-2 py-1 rounded bg-gray-800 font-mono">ESC</button>
+      </div>
+      <div id="search-results" class="p-2 max-h-80 overflow-y-auto">
+        <div class="p-4 text-center text-gray-500 text-xs">Type a keyword, protocol, port, or topic to search...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       FOOTER
+       ====================================================================== -->
+  <footer class="mt-20 border-t border-gray-800 bg-gray-950 py-12 text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <i data-lucide="network" class="w-4 h-4 text-cyan-400"></i>
+        <span class="font-mono text-gray-300 font-bold">NetAdmin.OS</span>
+        <span>— Self-Study Network Administrator Portal</span>
+      </div>
+      <div class="text-gray-400">
+        Zero-dependency, offline-ready single page application. Designed for GitHub Pages.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application JS -->
+  <script src="app.js"></script>
+</body>
+</html>
